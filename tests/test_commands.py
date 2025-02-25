@@ -6,10 +6,10 @@ from unittest.mock import patch
 import pytest   # pylint: disable=unused-import
 from app import App
 from app.commands import CommandHandler, CLI
-from app.commands.add import addCommand
-from app.commands.subtract import subtractCommand
-from app.commands.multiply import multiplyCommand
-from app.commands.divide import divideCommand
+from app.plugins.add import addCommand
+from app.plugins.subtract import subtractCommand
+from app.plugins.multiply import multiplyCommand
+from app.plugins.divide import divideCommand
 
 def test_app_init():
     """Test that the App initializes with a CommandHandler."""

@@ -1,11 +1,11 @@
 # APP
 from app.commands import CommandHandler
-from app.commands.add import addCommand
-from app.commands.subtract import subtractCommand
-from app.commands.multiply import multiplyCommand
-from app.commands.divide import divideCommand
-from app.commands.menu import menuCommand
-from app.commands.exit import exitCommand
+from app.plugins.add import addCommand
+from app.plugins.subtract import subtractCommand
+from app.plugins.multiply import multiplyCommand
+from app.plugins.divide import divideCommand
+from app.plugins.menu import menuCommand
+from app.plugins.exit import exitCommand
 
 class App:
     def __init__(self):
