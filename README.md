@@ -7,10 +7,21 @@ The **Advanced Calculator** is a modular and object-oriented Python package for 
 - Perform precise arithmetic calculations.
 - Store and retrieve calculation history.
 - Support for flexible and reusable calculation objects.
+- Modular plugin structure for extended functionality.
 - Unit tests using `pytest`.
 
 ## Project Structure
 ```
+app/
+│── commands/            # CLI commands for calculator functions
+│── plugins/             # Additional command integrations
+│    ├── add/            # Plugin for addition
+│    ├── divide/         # Plugin for division
+│    ├── exit/           # Plugin for exit command
+│    ├── menu/           # Plugin for menu handling
+│    ├── multiply/       # Plugin for multiplication
+│    ├── subtract/       # Plugin for subtraction
+│
 calculator/
 │── __init__.py          # Initializes the Calculator class
 │── calculations.py      # Manages calculation history
@@ -21,6 +32,7 @@ tests/
 │── test_calculation.py  # Unit tests for Calculation class
 │── test_calculations.py # Unit tests for history management
 │── test_calculator.py   # Unit tests for Calculator interface
+│── test_commands.py     # Unit tests for CLI commands
 │── test_operation.py    # Unit tests for arithmetic operations
 │
 README.md                # Project documentation
@@ -34,13 +46,23 @@ cd advanced-calculator
 ```
 
 ## Usage
-Example of using the calculator:
+Example of using the calculator in Python:
 ```python
 from calculator import Calculator
 from decimal import Decimal
 
 result = Calculator.add(Decimal('10.5'), Decimal('5.5'))
 print(f"Addition Result: {result}")
+```
+
+## Plugin System
+The **plugins branch** introduces a flexible plugin system for extending functionality. To use plugins:
+
+```bash
+python -m app.plugins.add 10 5
+python -m app.plugins.subtract 15 3
+python -m app.plugins.multiply 4 6
+python -m app.plugins.divide 20 5
 ```
 
 ## Running Tests
