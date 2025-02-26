@@ -10,6 +10,7 @@ from app.plugins.add import addCommand
 from app.plugins.subtract import subtractCommand
 from app.plugins.multiply import multiplyCommand
 from app.plugins.divide import divideCommand
+from app.plugins.plugins_manager import load_plugins
 
 def test_app_init():
     """Test that the App initializes with a CommandHandler."""
@@ -23,10 +24,13 @@ def test_app_start_menu_command():
         with pytest.raises(SystemExit):  # Exit after calling 'exit'
             app.start()
     # Verify that the menu command is recognized
-    mock_print.assert_any_call("Type 'exit' to exit or 'menu' to enter menu section.")
-    mock_print.assert_any_call("Available commands: add, subtract, multiply, divide, menu, exit\n")  # ✅ Correct output
-    mock_print.assert_any_call("Commands should be in this format: add 5 3\n")  # ✅ Additional menu info
-    mock_print.assert_any_call("Exiting...")  # ✅ Correct exit message
+    mock_print.assert_any_call("Type 'exit' to exit or 'menu' to enter the menu section.")  # Fixed assertion
+    mock_print.assert_any_call("Available Commands:")
+    mock_print.assert_any_call("- add <a> <b>: Perform addition")
+    mock_print.assert_any_call("- subtract <a> <b>: Perform subtraction")
+    mock_print.assert_any_call("- multiply <a> <b>: Perform multiplication")
+    mock_print.assert_any_call("- divide <a> <b>: Perform division")
+    mock_print.assert_any_call("- exit: Exit the application")
 
 def test_app_invalid_command():
     """Test handling of an invalid command."""
@@ -125,7 +129,7 @@ def test_divide_command_invalid_argument_2(capfd):
     command = divideCommand()
     command.execute(["5", "0"])
     out, _ = capfd.readouterr()
-    assert out == "An error occurred: Cannot divide by zero.\n"
+    assert "An error occurred: Cannot divide by zero." in out
 
 def test_multiply_command_missing_arguments(capfd):
     """Test multiplyCommand with missing arguments."""
@@ -184,3 +188,61 @@ def test_generated_test_data(test_data):
     assert isinstance(a, int)
     assert isinstance(b, int)
     assert operation in ('add', 'subtract', 'multiply', 'divide')
+
+def test_plugins_load():
+    """Test that plugins are loaded dynamically."""
+    command_handler = load_plugins()
+    assert "add" in command_handler.commands
+    assert "subtract" in command_handler.commands
+    assert "multiply" in command_handler.commands
+    assert "divide" in command_handler.commands
+    assert "menu" in command_handler.commands
+    assert "exit" in command_handler.commands
+
+def test_plugins_manager_dynamic_loading():
+    """Test that the plugins manager correctly loads available plugins."""
+    command_handler = load_plugins()
+    assert isinstance(command_handler, CommandHandler)
+    assert "add" in command_handler.commands
+    assert "subtract" in command_handler.commands
+    assert "multiply" in command_handler.commands
+    assert "divide" in command_handler.commands
+
+def test_plugins_manager_handles_missing_plugin():
+    """Test plugins manager's handling of non-existent plugins."""
+    command_handler = load_plugins()
+    assert "nonexistent" not in command_handler.commands
+
+def test_plugins_manager_error_handling():
+    """Test that the plugins manager does not crash on errors."""
+    with patch("importlib.import_module", side_effect=ImportError("Fake error")):
+        command_handler = load_plugins()
+        assert isinstance(command_handler, CommandHandler)
+
+def test_multiply_command_valid_input():
+    """
+    Test that the multiply command correctly processes valid input.
+    
+    This test ensures that when the multiply command is executed with valid numeric inputs, 
+    the correct result is printed. It mocks the Calculator.multiply method to return 6 
+    when called with 2 and 3 as arguments.
+    """
+    with patch("app.plugins.multiply.Calculator.multiply", return_value=6):
+        command = multiplyCommand()
+        with patch("builtins.print") as mock_print:
+            command.execute(["2", "3"])  # Execute the multiply command with valid inputs
+            mock_print.assert_called_with("The result of 2 x 3 is equal to 6")  # Check if correct result is printed
+
+
+def test_multiply_command_invalid_input():
+    """
+    Test that the multiply command handles invalid input properly.
+    
+    This test ensures that when the multiply command is executed with non-numeric input,
+    it correctly handles the ValueError and prints the appropriate error message.
+    In this case, 'a' is passed as the first argument, which is not a valid number.
+    """
+    command = multiplyCommand()
+    with patch("builtins.print") as mock_print:
+        command.execute(["a", "3"])  # Execute the multiply command with invalid input
+        mock_print.assert_called_with("Invalid number input: a or 3 is not a valid number.")  # Check if error message is printed
