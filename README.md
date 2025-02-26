@@ -13,14 +13,22 @@ The **Advanced Calculator** is a modular and object-oriented Python package for 
 ## Project Structure
 ```
 app/
-│── commands/            # CLI commands for calculator functions
-│── plugins/             # Additional command integrations
-│    ├── add/            # Plugin for addition
-│    ├── divide/         # Plugin for division
-│    ├── exit/           # Plugin for exit command
-│    ├── menu/           # Plugin for menu handling
-│    ├── multiply/       # Plugin for multiplication
-│    ├── subtract/       # Plugin for subtraction
+│── commands/                # CLI command handler
+│── plugins/                 # Plugins directory
+│   ├── add/                 # Addition plugin
+│   │   ├── __init__.py
+│   ├── subtract/            # Subtraction plugin
+│   │   ├── __init__.py
+│   ├── multiply/            # Multiplication plugin
+│   │   ├── __init__.py
+│   ├── divide/              # Division plugin
+│   │   ├── __init__.py
+│   ├── menu/                # Menu plugin
+│   │   ├── __init__.py
+│   ├── exit/                # Exit plugin
+│   │   ├── __init__.py
+│   ├── plugins_manager.py   # Plugin loader
+
 │
 calculator/
 │── __init__.py          # Initializes the Calculator class
